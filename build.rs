@@ -1,13 +1,17 @@
 extern crate cc;
 
 fn main() {
-    cc::Build::new()
-        .cuda(true)
-        .flag("-cudart=shared")
-        .flag("-gencode")
-        .flag("arch=compute_61,code=sm_61")
-        .file("kernel.cu")
-        .compile("libvector_add.a");
+    // cc::Build::new()
+    //     .cuda(true)
+    //     .flag("-cudart=shared")
+    //     .flag("-gencode")
+    //     .flag("arch=compute_61,code=sm_61")
+    //     .file("kernel.cu")
+    //     .compile("libvector_add.a");
+
+    println!("cargo:rustc-link-search=native=/home/englefly/work/link_cuda_kernel/");
+    println!("cargo:rustc-link-lib=static=vector_add");
+    println!("cargo:rustc-link-lib=stdc++");
 
     /* Link CUDA Runtime (libcudart.so) */
 
