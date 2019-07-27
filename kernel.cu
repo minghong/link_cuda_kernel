@@ -29,7 +29,7 @@
  * number of elements numElements.
  */
 __global__ void
-vectorAdd(const float *A, const float *B, float *C, int numElements)
+vectorAdd(const int *A, const int *B, int *C, int numElements)
 {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
 
@@ -45,24 +45,24 @@ vectorAdd(const float *A, const float *B, float *C, int numElements)
 extern  "C" {
   
 int
-vectorAdd_main (void)
+vectorAdd_main (int* h_C)
 {
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
 
     // Print the vector length to be used, and compute its size
     int numElements = 50000;
-    size_t size = numElements * sizeof(float);
+    size_t size = numElements * sizeof(int);
     printf("[Vector addition of %d elements]\n", numElements);
 
     // Allocate the host input vector A
-    float *h_A = (float *)malloc(size);
+    int *h_A = (int *)malloc(size);
 
     // Allocate the host input vector B
-    float *h_B = (float *)malloc(size);
+    int *h_B = (int *)malloc(size);
 
     // Allocate the host output vector C
-    float *h_C = (float *)malloc(size);
+    //int *h_C = (int *)malloc(size);
 
     // Verify that allocations succeeded
     if (h_A == NULL || h_B == NULL || h_C == NULL)
@@ -74,12 +74,12 @@ vectorAdd_main (void)
     // Initialize the host input vectors
     for (int i = 0; i < numElements; ++i)
     {
-        h_A[i] = rand()/(float)RAND_MAX;
-        h_B[i] = rand()/(float)RAND_MAX;
+        h_A[i] = i;
+        h_B[i] = 2*i;
     }
 
     // Allocate the device input vector A
-    float *d_A = NULL;
+    int *d_A = NULL;
     err = cudaMalloc((void **)&d_A, size);
 
     if (err != cudaSuccess)
@@ -89,7 +89,7 @@ vectorAdd_main (void)
     }
 
     // Allocate the device input vector B
-    float *d_B = NULL;
+    int *d_B = NULL;
     err = cudaMalloc((void **)&d_B, size);
 
     if (err != cudaSuccess)
@@ -99,7 +99,7 @@ vectorAdd_main (void)
     }
 
     // Allocate the device output vector C
-    float *d_C = NULL;
+    int *d_C = NULL;
     err = cudaMalloc((void **)&d_C, size);
 
     if (err != cudaSuccess)
@@ -154,7 +154,7 @@ vectorAdd_main (void)
     // Verify that the result vector is correct
     for (int i = 0; i < numElements; ++i)
     {
-        if (fabs(h_A[i] + h_B[i] - h_C[i]) > 1e-5)
+        if (fabs(h_A[i] + h_B[i] - h_C[i]) != 0)
         {
             fprintf(stderr, "Result verification failed at element %d!\n", i);
             exit(EXIT_FAILURE);
@@ -191,7 +191,7 @@ vectorAdd_main (void)
     // Free host memory
     free(h_A);
     free(h_B);
-    free(h_C);
+    // free(h_C);
 
     // Reset the device and exit
     // cudaDeviceReset causes the driver to clean up all state. While
