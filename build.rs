@@ -8,13 +8,6 @@ fn main() {
     //     .flag("arch=compute_61,code=sm_61")
     //     .file("kernel.cu")
     //     .compile("libvector_add.a");
-<<<<<<< HEAD
-=======
-
-    println!("cargo:rustc-link-search=native=/home/englefly/work/link_cuda_kernel/");
-    println!("cargo:rustc-link-lib=static=vector_add");
-    println!("cargo:rustc-link-lib=stdc++");
->>>>>>> b3cf00430f00465df388dd7a8c67e2a685b228aa
 
     /* Link CUDA Runtime (libcudart.so) */
 
